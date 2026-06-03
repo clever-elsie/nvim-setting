@@ -85,6 +85,7 @@ require("lazy").setup({
                 italic_comments = false,
                 disable_nvim_tree_bg = true,
             })
+            vim.lsp.handlers["textDocument/semanticTokens/full"] = vim.lsp.handlers["textDocument/semanticTokens/full"]
         end,
     },
     {
@@ -104,26 +105,43 @@ require("lazy").setup({
     },
     {
         "neovim/nvim-lspconfig",
+        dependencies={
+            "hrsh7th/cmp-nvim-lsp",
+        },
+        --event = { "BufReadPre", "BufNewFile" },
         config = function()
-            vim.lsp.config["clangd"] = {
-                cmd = {
-                    "clangd",
-                    "--background-index",
-                    "--clang-tidy",
-                    "--completion-style=detailed",
-                    "--header-insertion=never",
-                    "-j=2",
-                },
+            local server_config = vim.lsp.config["clangd"] or {}
+            server_config.cmd = {
+                "clangd",
+                "--background-index",
+                "--clang-tidy",
+                "--completion-style=detailed",
+                "--header-insertion=never",
+                "-j=2",
             }
+            local capabilities = require('cmp_nvim_lsp').default_capabilities()
+            server_config.capabilities = capabilities
+            vim.lsp.config["clangd"] = server_config
+            vim.lsp.enable("clangd")
+
             vim.api.nvim_create_autocmd('LspAttach',{
                 callback = function(args)
                     local opts = { buffer = args.buf }
                     vim.keymap.set('n', 'gd',        vim.lsp.buf.definition,  opts)
                     vim.keymap.set('n', '<F12>',     vim.lsp.buf.definition,  opts)
                     vim.keymap.set('n', '<C-t>',     '<C-t>',                 opts)
-                    vim.keymap.set('n', 'K',         vim.lsp.buf.hover,       opts)
                     vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename,      opts)
                     vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
+                    vim.keymap.set('n', 'K',         function()
+                        local current_buf = vim.api.nvim_get_current_buf()
+                        local current_line = vim.fn.line('.')-1
+                        local diagnostics = vim.diagnostic.get(current_buf, { lnum = current_line })
+                        if #diagnostics > 0 then
+                            vim.diagnostic.open_float()
+                        else
+                            vim.lsp.buf.hover()
+                        end
+                    end, opts)
                 end
             })
         end
