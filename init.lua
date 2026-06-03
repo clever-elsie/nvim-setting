@@ -141,7 +141,24 @@ require("lazy").setup({
                     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<C-Space>'] = cmp.mapping.complete(),
-                    ['<CR>'] = cmp.mapping.confirm({ select = true}),
+                    ['<Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            if cmp.get_selected_entry() then
+                                cmp.confirm({select=false})
+                            else
+                                cmp.select_next_item()
+                            end
+                        else
+                            fallback()
+                        end
+                    end, {"i", "s"}),
+                    ['<S-Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        else
+                            fallback()
+                        end
+                    end,{"i","s"}),
                 }),
                 sources = cmp.config.sources({
                     { name = 'nvim-lsp' },
