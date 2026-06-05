@@ -122,7 +122,36 @@ require("lazy").setup({
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
             server_config.capabilities = capabilities
             vim.lsp.config["clangd"] = server_config
+
+            server_config.handlers = {
+                ["textDocument/publishDiagnostics"] = function() end,
+            }
+            vim.lsp.config["clangd"] = server_config
             vim.lsp.enable("clangd")
+
+            local efm_config = vim.lsp.config["efm"] or {}
+            efm_config.cmd = { "efm-langserver" }
+            efm_config.init_options = { documentFormatting = false }
+            efm_config.settings = {
+                languages = {
+                    cpp = {
+                        {
+                            -- GCC 16.1 を用いて構文チェックのみを走らせる
+                            lintCommand = "g++ -fsyntax-only -freflection -std=c++26 -Wall -Wextra ${INPUT}",
+                            lintSource = "GCC 16.1",
+                            lintFormats = {
+                                "%f:%l:%c: %trror: %m",
+                                "%f:%l:%c: %tarning: %m",
+                                "%f:%l:%c: note: %m",
+                                "%f:%l: %trror: %m",
+                                "%f:%l: %tarning: %m",
+                            },
+                        }
+                    }
+                }
+            }
+            vim.lsp.config["efm"] = efm_config
+            vim.lsp.enable("efm")
 
             vim.api.nvim_create_autocmd('LspAttach',{
                 callback = function(args)
