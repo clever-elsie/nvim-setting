@@ -121,7 +121,6 @@ require("lazy").setup({
             }
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
             server_config.capabilities = capabilities
-            vim.lsp.config["clangd"] = server_config
 
             server_config.handlers = {
                 ["textDocument/publishDiagnostics"] = function() end,
@@ -208,7 +207,7 @@ require("lazy").setup({
                     end,{"i","s"}),
                 }),
                 sources = cmp.config.sources({
-                    { name = 'nvim-lsp' },
+                    { name = 'nvim_lsp' },
                 }, {
                     { name = 'buffer' },
                 })
