@@ -37,6 +37,14 @@ vim.opt.hlsearch = true
 
 -- クリップボードの共有
 vim.opt.clipboard = "unnamedplus"
+-- オートリロード
+vim.opt.autoread = true
+vim.api.nvim_create_augroup("AutoReload", { clear = true })
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  group = "AutoReload",
+  pattern = "*",
+  command = "checktime",
+})
 
 -- その他
 vim.opt.wrap = false
