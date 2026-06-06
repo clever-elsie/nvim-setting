@@ -125,6 +125,7 @@ require("lazy").setup({
                 "--clang-tidy",
                 "--completion-style=detailed",
                 "--header-insertion=never",
+                "--query-driver=/usr/local/bin/g++,/usr/local/bin/gcc",
                 "-j=2",
             }
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
