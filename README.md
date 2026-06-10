@@ -13,6 +13,6 @@ chmod +x tree-sitter-linux-x64
 sudo mv tree-sitter-linux-x64 /usr/local/bin/tree-sitter
 
 # efm-langserver
-curl -sLO https://github.com/mattn/efm-langserver/releases/latest/download/efm-langserver_v0.0.54_linux_amd64.tar.gz
-tar -xvf efm-langserver_v0.0.54_linux_amd64.tar.gz
-mv efm-langserver_v0.0.54_linux_amd64/efm-langserver ~/.local/bin/
+curl -sLO https://github.com/mattn/efm-langserver/releases/latest/download/efm-langserver_v0.0.56_linux_amd64.tar.gz
+tar -xvf efm-langserver_v0.0.56_linux_amd64.tar.gz
+mv efm-langserver_v0.0.56_linux_amd64/efm-langserver ~/.local/bin/
